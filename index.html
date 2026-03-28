@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Yuumi – Physics Drag</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: transparent;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+  }
+
+  #overlay {
+    position: fixed; inset: 0;
+    background: transparent;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 18px;
+    z-index: 100;
+    transition: opacity 0.6s;
+  }
+  #overlay.hidden { opacity: 0; pointer-events: none; }
+
+  .loader-ring {
+    width: 52px; height: 52px;
+    border: 3px solid rgba(120,80,255,0.2);
+    border-top-color: rgba(160,120,255,0.9);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #load-text {
+    color: rgba(200,180,255,0.7);
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  #load-bar-wrap {
+    width: 200px; height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px; overflow: hidden;
+  }
+  #load-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #7040ff, #b080ff);
+    border-radius: 2px;
+    transition: width 0.2s;
+  }
+
+  #canvas-wrap { position: fixed; inset: 0; }
+
+  #ui {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px;
+    pointer-events: none;
+  }
+  .badge {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; letter-spacing: 0.4px;
+    backdrop-filter: blur(10px);
+  }
+  .badge b { color: rgba(180,140,255,0.9); }
+
+
+  #err {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color: #ff8080; font-size: 13px;
+    text-align: center; display: none;
+    background: rgba(0,0,0,0.8);
+    padding: 24px 32px; border-radius: 12px;
+    border: 1px solid rgba(255,80,80,0.3);
+    line-height: 1.8; white-space: pre;
+  }
+
+  /* ── Settings panel ── */
+  #settings-panel {
+    position: fixed;
+    min-width: 220px;
+    background: rgba(18, 8, 44, 0.96);
+    border: 1px solid rgba(180, 130, 255, 0.5);
+    color: rgba(235, 215, 255, 0.92);
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    padding: 14px 18px 16px;
+    border-radius: 14px;
+    pointer-events: all;
+    z-index: 60;
+    box-shadow: 0 4px 28px rgba(100, 50, 255, 0.3);
+    display: none;
+  }
+  #settings-panel h3 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: rgba(200, 160, 255, 0.95);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(180,130,255,0.2);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #settings-close {
+    background: none;
+    border: none;
+    color: rgba(180,140,255,0.6);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 8px;
+    margin: 0;
+  }
+  #settings-close:hover { color: rgba(220,180,255,1); }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .setting-row label {
+    white-space: nowrap;
+    color: rgba(210, 185, 255, 0.85);
+    font-size: 12px;
+  }
+  .setting-row input[type=range] {
+    flex: 1;
+    accent-color: #a060ff;
+    cursor: pointer;
+  }
+  .setting-row span {
+    width: 32px;
+    text-align: right;
+    font-size: 11px;
+    color: rgba(180,140,255,0.7);
+  }
+  .skin-toggle { display: flex; gap: 4px; flex: 1; }
+  .skin-btn {
+    flex: 1; padding: 3px 8px;
+    background: rgba(30, 15, 60, 0.9);
+    border: 1px solid rgba(180, 130, 255, 0.35);
+    color: rgba(210, 185, 255, 0.7);
+    border-radius: 6px; font-size: 11px; cursor: pointer;
+    font-family: 'Georgia', serif;
+  }
+  .skin-btn.active {
+    background: rgba(120, 60, 220, 0.45);
+    border-color: rgba(180, 130, 255, 0.85);
+    color: rgba(235, 215, 255, 1);
+  }
+
+  /* ── Speech bubble ── */
+  .speech-bubble {
+    position: fixed;
+    max-width: 230px;
+    background: rgba(22, 10, 50, 0.93);
+    border: 1px solid rgba(180, 130, 255, 0.5);
+    color: rgba(235, 215, 255, 0.95);
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 11px 15px;
+    border-radius: 14px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.88);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    box-shadow: 0 4px 24px rgba(100, 50, 255, 0.25);
+  }
+  .speech-bubble.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .speech-bubble.fade-out {
+    opacity: 0;
+    transform: scale(0.93);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  /* Tail variants — bottom-left, bottom-right, top-left, top-right */
+  .speech-bubble.tail-bl::before,
+  .speech-bubble.tail-br::before,
+  .speech-bubble.tail-tl::before,
+  .speech-bubble.tail-tr::before {
+    content: '';
+    position: absolute;
+    border: 10px solid transparent;
+  }
+  .speech-bubble.tail-bl::before {
+    bottom: -19px; left: 18px;
+    border-top-color: rgba(180,130,255,0.5);
+  }
+  .speech-bubble.tail-br::before {
+    bottom: -19px; right: 18px;
+    border-top-color: rgba(180,130,255,0.5);
+  }
+  .speech-bubble.tail-tl::before {
+    top: -19px; left: 18px;
+    border-bottom-color: rgba(180,130,255,0.5);
+  }
+  .speech-bubble.tail-tr::before {
+    top: -19px; right: 18px;
+    border-bottom-color: rgba(180,130,255,0.5);
+  }
+  /* Inner fill triangle (layered over border triangle) */
+  .speech-bubble.tail-bl::after,
+  .speech-bubble.tail-br::after,
+  .speech-bubble.tail-tl::after,
+  .speech-bubble.tail-tr::after {
+    content: '';
+    position: absolute;
+    border: 9px solid transparent;
+  }
+  .speech-bubble.tail-bl::after {
+    bottom: -17px; left: 19px;
+    border-top-color: rgba(22,10,50,0.93);
+  }
+  .speech-bubble.tail-br::after {
+    bottom: -17px; right: 19px;
+    border-top-color: rgba(22,10,50,0.93);
+  }
+  .speech-bubble.tail-tl::after {
+    top: -17px; left: 19px;
+    border-bottom-color: rgba(22,10,50,0.93);
+  }
+  .speech-bubble.tail-tr::after {
+    top: -17px; right: 19px;
+    border-bottom-color: rgba(22,10,50,0.93);
+  }
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <div class="loader-ring"></div>
+  <div id="load-text">Loading Yuumi…</div>
+  <div id="load-bar-wrap"><div id="load-bar"></div></div>
+</div>
+
+<div id="canvas-wrap"></div>
+
+<div id="settings-panel">
+  <h3>⚙ Settings<button id="settings-close">✕</button></h3>
+  <div class="setting-row">
+    <label>Quote volume</label>
+    <input type="range" id="vol-quote" min="0" max="100" value="100">
+    <span id="vol-quote-val">100%</span>
+  </div>
+  <div class="setting-row">
+    <label>Yelp volume</label>
+    <input type="range" id="vol-yelp" min="0" max="100" value="100">
+    <span id="vol-yelp-val">100%</span>
+  </div>
+  <div class="setting-row">
+    <label>Size</label>
+    <input type="range" id="size-scale" min="50" max="200" value="100">
+    <span id="size-scale-val">100%</span>
+  </div>
+  <div class="setting-row">
+    <label>Opacity</label>
+    <input type="range" id="opacity-scale" min="10" max="100" value="100">
+    <span id="opacity-scale-val">100%</span>
+  </div>
+  <div class="setting-row">
+    <label>Follow cursor</label>
+    <button id="follow-toggle" class="skin-btn" style="flex:1">Off</button>
+  </div>
+  <div class="setting-row">
+    <button id="quit-btn" style="flex:1;padding:3px 8px;background:rgba(60,10,10,0.9);border:1px solid rgba(255,80,80,0.35);color:rgba(255,160,160,0.85);border-radius:6px;font-size:11px;cursor:pointer;font-family:'Georgia',serif;">Quit</button>
+  </div>
+  <div class="setting-row">
+    <label>Skin</label>
+    <div class="skin-toggle">
+      <button class="skin-btn" data-skin="default">Base</button>
+      <button class="skin-btn active" data-skin="edg">EDG</button>
+      <button class="skin-btn" data-skin="principal">Principal</button>
+    </div>
+  </div>
+</div>
+<div id="err"></div>
+
+<script src="libs/three.min.js"></script>
+<script src="libs/GLTFLoader.js"></script>
+<script src="physics.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

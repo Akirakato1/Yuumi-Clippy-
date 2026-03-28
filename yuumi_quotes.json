@@ -1,0 +1,78 @@
+{
+  "champion_select": {
+    "pick": [
+      "You and me, we got this!"
+    ],
+    "ban": [
+      "More of a dog person, huh?"
+    ]
+  },
+  "movement": {
+    "first_move": [
+      "Cats make great companions! Just ask my master... who disappeared under mysterious circumstances.",
+      "Alright! Which one of you's got great aim, and is good at chin scritches?",
+      "Who's ready to risk our lives, defeat our foes, and maybe knock over some cups?",
+      "Tell me the game plan again. Wait. Fish! Someone has fish! Where is it?",
+      "So, who wants to be my best friend? ...Book, I know you're already my best friend!"
+    ],
+    "moving": [
+      "♪ Where's my fishy fish fish dish? ♪ Meow!~",
+      "Today we are destroyers!",
+      "Don't tell anyone but... I love hugs.",
+      "Where's my fishy fishy fish for my dishy dishy dish?!",
+      "Keep an eye out for red dot, Book! It's gotta be here somewhere.",
+      "The expert huntress stalks the battlefield.",
+      "Where to, Book? Purr~",
+      "I won't lose you, Book! Not after losing master.",
+      "Book, float us that-a-way!"
+    ],
+    "moving_in_river": [
+      "A river? Uh-uh! Book hates water!",
+      "Do not drop me! Do not drop me!"
+    ],
+    "moving_while_attached": [
+      "If we find a rat, I call dibs! Or a bug. Or a FISH!",
+      "This way! No THIS way! Woah-kay, that way it is.",
+      "I could tell you wanted a brave and powerful warrior by your side.",
+      "Okay, it's time to prowl! You do know how to prowl, right?",
+      "Mush, mush! Wheeeeheehee!",
+      "They aren't ready for the ferocious team of... US!",
+      "You can pet me on my chin and back! Nowhere else. Mrow!",
+      "Is it time to save our friends again?",
+      "Ooh, you smell good! Did you recently fish?",
+      "Rubbing my head on you means you're mine! Purr~",
+      "Do you ever get so sleepy you fall asleep sitting up? Just me?",
+      "Wherever you go, I go! Just... don't go somewhere bad.",
+      "Faster! Faster!",
+      "Do you have snacks in your pocket? How 'bout now? ...How 'bout now?!",
+      "I'm like your ghost! oooOOooOOoo!"
+    ],
+    "long_move": [
+      "Book, sometimes I pretend you're just a nice comfy box! ...What? That's a compliment! Purr~",
+      "I've read all of Book. Well, most of Book. I like the pictures of fish... of which there are none, Book! Meow...",
+      "Hmm, today should I follow my head? Or my nose, or.. Oh! Sunbeam ahead! Let's chase that!",
+      "If I didn't have to protect Book, I'd just be a normal magical cat floating around Bandle City! Okay, napping around Bandle City.",
+      "Naps make my magic stronger! It's true! Look! ...I'm so strong, mmh, so strong!",
+      "The Book-keeper is a great role for someone as responsible as me! ...What?",
+      "I'm descended from lions! And you're descended from trees! We're in our element, Book!",
+      "If I ever lost you, Book, the fabric of the spirit realm would get all torn up! And I'd lose my best friend.",
+      "Someone scratched out the page that led here! That's right, Book. Someone! We'll never know who.",
+      "Hey Book, do you ever take a nap? ...You can't?! What do you do all day?!",
+      "Ah, I miss the way my yordle scratched between my ears. ...Being read from cover to cover sounds nice too.",
+      "I save my friends? No one notices. I open a teensy portal to the spirit realm? Everyone is up in my fur!"
+    ],
+    "long_move_while_attached": [
+      "I am the brains, you are the brawn, Book! ...Is Book.",
+      "Hey, new friend? Uh, warn me if you're going to do something crazy, okay?",
+      "Hey. Hey. Hey. Hey! ...Huh? Oh no, I don't need anything!",
+      "If someone told you to jump in a lake, would you do it? Just 'cause... I go where you go.",
+      "I bet we'll be friends forever! Well, unless you wander into the brush with your face.",
+      "Don't get too attached, Book! This one looks reckless...",
+      "In case you're wondering what that smell is, it's Book. Smells like old trees.",
+      "Do you know what 'vexatious' means? Book called me that and I think it might be mean.",
+      "You hungry? I stuck a leftover rat on page 237! Meow!~",
+      "The only thing standing between us and lunch is... our enemies.",
+      "Don't worry, I'll be here through thick or thin! Unless I smell fish. Do you have fish?!"
+    ]
+  }
+}

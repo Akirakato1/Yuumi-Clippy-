@@ -1,0 +1,52 @@
+{
+  "name": "yuumi-clippy",
+  "version": "1.0.0",
+  "description": "Yuumi desktop companion overlay",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "generate-jaw": "node generate_jaw_data.js",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.yuumiclippy.app",
+    "productName": "Yuumi Clippy",
+    "files": [
+      "main.js",
+      "preload.js",
+      "app.js",
+      "index.html",
+      "physics.js",
+      "libs/**",
+      "yuumi_models/**",
+      "yuumi_quotes_audio/**",
+      "yuumi_quotes.json",
+      "yuumi_jaw_data.json"
+    ],
+    "asarUnpack": [
+      "yuumi_models/**",
+      "yuumi_quotes_audio/**"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis",     "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "shortcutName": "Yuumi Clippy",
+      "runAfterFinish": true
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
+}
